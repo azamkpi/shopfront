@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: shopfront
+  datasource:
+    url: jdbc:postgresql://localhost:5432/shopfront
+    username: shopfront
+    password: shopfront
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: Asia/Tashkent
+  flyway:
+    enabled: true
+  threads:
+    virtual:
+      enabled: true
+
+server:
+  port: 8080
+
+app:
+  shop-slug: ${SHOP_SLUG:aroma}
+
+logging:
+  level:
+    uz.azam.shopfront: DEBUG
