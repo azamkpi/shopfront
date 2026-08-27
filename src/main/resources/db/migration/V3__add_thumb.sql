@@ -1,0 +1,1 @@
+ALTER TABLE product_image ADD COLUMN thumb_file_id TEXT;

@@ -18,6 +18,7 @@ import uz.azam.shopfront.service.ShopContext;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -56,12 +57,20 @@ public class UpdateHandler {
             return;
         }
 
+        List<PhotoSize> sizes = message.getPhoto();
+
         // eng katta o'lchamdagi rasmni olamiz
-        PhotoSize photo = message.getPhoto().stream()
+        PhotoSize large = sizes.stream()
                 .max(Comparator.comparing(PhotoSize::getFileSize))
                 .orElseThrow();
 
-        var ref = new MediaGroupBuffer.PhotoRef(photo.getFileId(), photo.getFileUniqueId());
+        // katalog uchun: 400px atrofidagi eng yaqin o'lcham
+        PhotoSize thumb = sizes.stream()
+                .filter(s -> s.getWidth() >= 320)
+                .min(Comparator.comparing(PhotoSize::getWidth))
+                .orElse(large);
+
+        var ref = new MediaGroupBuffer.PhotoRef(large.getFileId(), large.getFileUniqueId(), thumb.getFileId());
         String groupKey = message.getMediaGroupId() != null
                 ? message.getMediaGroupId()
                 : "single-" + message.getMessageId();

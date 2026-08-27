@@ -26,4 +26,7 @@ public class ProductImage {
 
     @Column(name = "sort_order", nullable = false)
     private Integer sortOrder = 0;
+
+    @Column(name = "thumb_file_id")
+    private String thumbFileId;
 }

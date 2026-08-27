@@ -29,7 +29,7 @@ public class MediaGroupBuffer {
         private ScheduledFuture<?> task;
     }
 
-    public record PhotoRef(String fileId, String fileUniqueId) {}
+    public record PhotoRef(String fileId, String fileUniqueId, String thumbFileId) {}
 
     public void add(String groupKey, Long chatId, PhotoRef photo,
                     String caption, Consumer<Batch> onComplete) {
