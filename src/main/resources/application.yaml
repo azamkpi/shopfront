@@ -2,9 +2,9 @@ spring:
   application:
     name: shopfront
   datasource:
-    url: jdbc:postgresql://localhost:5432/shopfront
-    username: shopfront
-    password: shopfront
+    url: jdbc:postgresql://localhost:5432/${DB_NAME}
+    username: ${DB_USER}
+    password: ${DB_PASS}
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
