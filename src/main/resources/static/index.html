@@ -252,6 +252,7 @@
 
     document.getElementById('fSend').onclick = async () => {
         const phone = document.getElementById('fPhone').value.trim();
+        const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
         if (phone.length < 7) {
             tg.showAlert('Telefon raqamni to\'liq kiriting');
             return;
@@ -263,7 +264,9 @@
         try {
             await api('/orders', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json',
+                    ...(u ? { 'X-Telegram-User-Id': String(u.id) } : {})
+                },
                 body: JSON.stringify({
                     variantId: currentProduct.variants[0] ? currentProduct.variants[0].id : null,
                     fullName: document.getElementById('fName').value.trim(),

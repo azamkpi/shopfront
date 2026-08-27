@@ -53,7 +53,10 @@ public class ApiController {
     }
 
     @PostMapping("/orders")
-    public ResponseEntity<Map<String, Object>> createOrder(@RequestBody OrderCreateDto dto) {
+    public ResponseEntity<Map<String, Object>> createOrder(
+            @RequestBody OrderCreateDto dto,
+            @RequestHeader(value="X-Telegram-User-Id", required = false) Long tgUserId
+    ) {
         var order = orderService.create(dto, null);
         return ResponseEntity.ok(Map.of("id", order.getId(), "status", "ok"));
     }

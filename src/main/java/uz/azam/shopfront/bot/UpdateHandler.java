@@ -181,6 +181,9 @@ public class UpdateHandler {
     }
 
     private void send(Long chatId, String text) {
+        if (chatId == null) {
+            log.warn("chatId null, xabar yuborilmadi");
+        }
         try {
             telegramClient.execute(SendMessage.builder()
                     .chatId(chatId)
