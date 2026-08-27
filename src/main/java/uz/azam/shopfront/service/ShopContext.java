@@ -28,4 +28,8 @@ public class ShopContext {
     public Long shopId() {
         return shop().getId();
     }
+
+    public void refresh() {
+        cached = null;
+    }
 }
