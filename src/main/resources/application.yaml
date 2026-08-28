@@ -1,4 +1,8 @@
 spring:
+  web:
+    resources:
+      cache:
+        period: 0
   application:
     name: shopfront
   datasource:
