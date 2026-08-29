@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 
 public record ProductCardDto(
         Long id,
+        Long variantId,
         String name,
         BigDecimal price,
         boolean negotiable,

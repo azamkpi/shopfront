@@ -1,0 +1,1 @@
+alter table customer rename column update_at to updated_at

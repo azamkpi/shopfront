@@ -11,10 +11,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 import uz.azam.shopfront.domain.Shop;
 import uz.azam.shopfront.repo.ShopRepository;
-import uz.azam.shopfront.service.CaptionParser;
-import uz.azam.shopfront.service.MediaGroupBuffer;
-import uz.azam.shopfront.service.ProductService;
-import uz.azam.shopfront.service.ShopContext;
+import uz.azam.shopfront.service.*;
+import uz.azam.shopfront.util.MoneyUtils;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -31,6 +29,7 @@ public class UpdateHandler {
     private final MediaGroupBuffer mediaGroupBuffer;
     private final CaptionParser captionParser;
     private final ProductService productService;
+    private final CustomerService customerService;
 
     public void handle(Update update) {
         if (!update.hasMessage()) {
@@ -93,7 +92,7 @@ public class UpdateHandler {
 
             String priceText = parsed.negotiable()
                     ? "Kelishiladi"
-                    : (parsed.price() != null ? formatPrice(parsed.price()) : "Ko'rsatilmagan");
+                    : (parsed.price() != null ? MoneyUtils.format(parsed.price()) : "Ko'rsatilmagan");
 
             send(chatId, """
                 ✅ Qo'shildi
@@ -114,10 +113,6 @@ public class UpdateHandler {
     private boolean isAdmin(Long chatId) {
         Long adminId = shopContext.shop().getAdminChatId();
         return adminId != null && adminId.equals(chatId);
-    }
-
-    private String formatPrice(BigDecimal price) {
-        return String.format("%,d so'm", price.longValue()).replace(',', ' ');
     }
 
     private void handleText(Message message) {

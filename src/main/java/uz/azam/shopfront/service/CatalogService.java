@@ -60,13 +60,13 @@ public class CatalogService {
 
     private ProductCardDto toCard(Product p) {
         ProductVariant first = p.getVariants().isEmpty() ? null : p.getVariants().get(0);
-        String imageUrl = p.getImages().isEmpty() ? null
-                : "/img/" + (p.getImages().get(0).getThumbFileId() != null
-                             ? p.getImages().get(0).getThumbFileId()
-                             : p.getImages().get(0).getFileId());
+        String imageUrl = p.getImages().isEmpty()
+                ? null
+                : "/img/" + p.getImages().get(0).getFileId();
 
         return new ProductCardDto(
                 p.getId(),
+                first != null ? first.getId() : null,
                 p.getName(),
                 first != null ? first.getPrice() : null,
                 p.getNegotiable(),

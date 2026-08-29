@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import uz.azam.shopfront.domain.Shop;
 import uz.azam.shopfront.repo.CategoryRepository;
 import uz.azam.shopfront.service.CatalogService;
+import uz.azam.shopfront.service.CustomerService;
 import uz.azam.shopfront.service.OrderService;
 import uz.azam.shopfront.service.ShopContext;
 import uz.azam.shopfront.web.dto.CatalogPageDto;
@@ -25,6 +26,7 @@ public class ApiController {
     private final OrderService orderService;
     private final ShopContext shopContext;
     private final CategoryRepository categoryRepository;
+    private final CustomerService customerService;
 
     @GetMapping("/shop")
     public ShopInfoDto shop() {
@@ -59,5 +61,14 @@ public class ApiController {
     ) {
         var order = orderService.create(dto, null);
         return ResponseEntity.ok(Map.of("id", order.getId(), "status", "ok"));
+    }
+
+    @GetMapping("/me")
+    public Map<String, String> me(@RequestParam Long tgUserId) {
+        return customerService.find(tgUserId)
+                .map(c -> Map.of(
+                        "phone", c.getPhone() != null ? c.getPhone() : "",
+                        "fullName", c.getFullName() != null ? c.getFullName() : ""))
+                .orElse(Map.of("phone", "", "fullName", ""));
     }
 }

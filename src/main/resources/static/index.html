@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Do'kon</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -14,29 +14,91 @@
             --btn: var(--tg-theme-button-color, #2481cc);
             --btn-text: var(--tg-theme-button-text-color, #fff);
         }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            margin: 0; padding: 0;
+            margin: 0;
+            padding: 0;
             font-family: -apple-system, "SF Pro Text", system-ui, sans-serif;
-            background: var(--bg); color: var(--text);
+            background: var(--bg);
+            color: var(--text);
         }
-        .head { padding: 14px 16px 6px; }
-        .head h1 { margin: 0; font-size: 19px; font-weight: 600; }
-        .head p { margin: 3px 0 0; font-size: 13px; color: var(--hint); }
 
-        .chips { display: flex; gap: 8px; overflow-x: auto; padding: 12px 16px; scrollbar-width: none; }
-        .chips::-webkit-scrollbar { display: none; }
+        .head {
+            padding: 14px 16px 6px;
+        }
+
+        .head h1 {
+            margin: 0;
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .head p {
+            margin: 3px 0 0;
+            font-size: 13px;
+            color: var(--hint);
+        }
+
+        .chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 12px 16px;
+            scrollbar-width: none;
+        }
+
+        .chips::-webkit-scrollbar {
+            display: none;
+        }
+
         .chip {
-            flex: 0 0 auto; padding: 7px 14px; border-radius: 16px;
-            background: var(--card); font-size: 14px; border: none;
-            color: var(--text); cursor: pointer; white-space: nowrap;
+            flex: 0 0 auto;
+            padding: 7px 14px;
+            border-radius: 16px;
+            background: var(--card);
+            font-size: 14px;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            white-space: nowrap;
         }
-        .chip.on { background: var(--btn); color: var(--btn-text); }
 
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 4px 16px 24px; }
-        .card { background: var(--card); border-radius: 14px; overflow: hidden; cursor: pointer; }
-        .card .ph { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; background: var(--card); }
-        .card .body { padding: 8px 10px 11px; }
+        .chip.on {
+            background: var(--btn);
+            color: var(--btn-text);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 4px 16px 24px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 14px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .card .ph {
+            width: 100%;
+            aspect-ratio: 4/5;
+            object-fit: cover;
+            display: block;
+            background: var(--card);
+        }
+
+        .card .body {
+            padding: 8px 10px 11px;
+        }
+
         .card .nm {
             font-size: 13px;
             line-height: 1.35;
@@ -46,46 +108,356 @@
             overflow: hidden;
             min-height: 53px;
         }
-        .card .pr { font-size: 14px; font-weight: 600; margin-top: 5px; }
-        .card .neg { font-size: 12px; color: var(--btn); margin-top: 5px; }
-        .out { opacity: .45; }
 
-        .empty { text-align: center; padding: 60px 20px; color: var(--hint); font-size: 14px; }
+        .card .pr {
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .card .neg {
+            font-size: 12px;
+            color: var(--btn);
+            margin-top: 5px;
+        }
+
+        .card .act {
+            margin-top: 8px;
+        }
+
+        .card .buy {
+            width: 100%;
+            padding: 9px;
+            border: none;
+            border-radius: 9px;
+            background: var(--btn);
+            color: var(--btn-text);
+            font-size: 13px;
+            font-weight: 600;
+        }
+        .card .buy.added { background:var(--card); color:var(--hint); }
+
+        .card .buy.off {
+            display: none;
+        }
+
+        .card .step {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--btn);
+            border-radius: 9px;
+            padding: 3px;
+        }
+
+        .card .step.on {
+            display: flex;
+        }
+
+        .card .step button {
+            width: 32px;
+            height: 30px;
+            border: none;
+            border-radius: 7px;
+            background: rgba(255, 255, 255, .22);
+            color: var(--btn-text);
+            font-size: 17px;
+            line-height: 1;
+        }
+
+        .card .step span {
+            color: var(--btn-text);
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .lb {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 40;
+            display: none;
+            touch-action: none;
+            overflow: hidden;
+        }
+
+        .lb.on {
+            display: block;
+        }
+
+        .lb img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            max-width: 100%;
+            max-height: 100%;
+            transform-origin: center;
+            will-change: transform;
+        }
+
+        .lb .close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            z-index: 2;
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .15);
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .lb .cnt {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, .75);
+            font-size: 13px;
+        }
+
+        .lb .hint {
+            position: absolute;
+            top: 60px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: rgba(255, 255, 255, .55);
+            font-size: 12px;
+        }
+
+        .cartbar {
+            position: fixed;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            z-index: 15;
+            background: var(--btn);
+            color: var(--btn-text);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .cartbar.on {
+            display: block;
+        }
+
+        .citem {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--card);
+        }
+
+        .citem img {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .citem .info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .citem .nm2 {
+            font-size: 13px;
+            line-height: 1.3;
+        }
+
+        .citem .pr2 {
+            font-size: 13px;
+            color: var(--hint);
+            margin-top: 2px;
+        }
+
+        .qty {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty button {
+            width: 28px;
+            height: 28px;
+            border: none;
+            border-radius: 6px;
+            background: var(--card);
+            color: var(--text);
+            font-size: 16px;
+        }
+
+        .grid {
+            padding-bottom: 80px;
+        }
+
+        .out {
+            opacity: .45;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--hint);
+            font-size: 14px;
+        }
 
         /* Mahsulot sahifasi */
-        .page { position: fixed; inset: 0; background: var(--bg); z-index: 10;
-            overflow-y: auto; display: none; }
-        .page.on { display: block; }
-        .slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
-        .slider::-webkit-scrollbar { display: none; }
-        .slider img { flex: 0 0 100%; aspect-ratio: 1; object-fit: contain; background: var(--card); }
-        .dots { display: flex; justify-content: center; gap: 5px; padding: 8px 0; }
-        .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--hint); opacity: .35; }
-        .dot.on { opacity: 1; }
-        .detail { padding: 4px 16px 100px; }
-        .detail h2 { margin: 6px 0 10px; font-size: 18px; }
-        .detail .price { font-size: 22px; font-weight: 700; }
-        .detail .desc { margin-top: 14px; font-size: 14px; line-height: 1.55; white-space: pre-wrap; }
+        .page {
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 10;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .page.on {
+            display: block;
+        }
+
+        .slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+        }
+
+        .slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .slider img {
+            flex: 0 0 100%;
+            aspect-ratio: 1;
+            object-fit: contain;
+            background: var(--card);
+        }
+
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            padding: 8px 0;
+        }
+
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--hint);
+            opacity: .35;
+        }
+
+        .dot.on {
+            opacity: 1;
+        }
+
+        .detail {
+            padding: 4px 16px 100px;
+        }
+
+        .detail h2 {
+            margin: 6px 0 10px;
+            font-size: 18px;
+        }
+
+        .detail .price {
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .detail .desc {
+            margin-top: 14px;
+            font-size: 14px;
+            line-height: 1.55;
+            white-space: pre-wrap;
+        }
 
         /* Buyurtma formasi */
-        .sheet { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 20; display: none; }
-        .sheet.on { display: block; }
-        .sheet .inner { position: absolute; bottom: 0; left: 0; right: 0;
-            background: var(--bg); border-radius: 16px 16px 0 0; padding: 18px 16px 24px; }
-        .sheet h3 { margin: 0 0 14px; font-size: 17px; }
-        .sheet input, .sheet textarea {
-            width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px;
-            border: 1px solid var(--card); background: var(--card);
-            color: var(--text); font-size: 15px; font-family: inherit;
+        .sheet {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .45);
+            z-index: 20;
+            display: none;
         }
-        .sheet textarea { min-height: 64px; resize: none; }
-        .btn { width: 100%; padding: 14px; border: none; border-radius: 12px;
-            background: var(--btn); color: var(--btn-text); font-size: 15px;
-            font-weight: 600; cursor: pointer; }
-        .btn:disabled { opacity: .5; }
-        .link { display: block; text-align: center; margin-top: 10px;
-            color: var(--hint); font-size: 14px; background: none; border: none; width: 100%; }
-        .chips { display: none; }
+
+        .sheet.on {
+            display: block;
+        }
+
+        .sheet .inner {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg);
+            border-radius: 16px 16px 0 0;
+            padding: 18px 16px 24px;
+        }
+
+        .sheet h3 {
+            margin: 0 0 14px;
+            font-size: 17px;
+        }
+
+        .sheet input, .sheet textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--card);
+            background: var(--card);
+            color: var(--text);
+            font-size: 15px;
+            font-family: inherit;
+        }
+
+        .sheet textarea {
+            min-height: 64px;
+            resize: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: var(--btn);
+            color: var(--btn-text);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn:disabled {
+            opacity: .5;
+        }
+
+        .link {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            color: var(--hint);
+            font-size: 14px;
+            background: none;
+            border: none;
+            width: 100%;
+        }
+
+        .chips {
+            display: none;
+        }
     </style>
 </head>
 <body>
@@ -100,6 +472,8 @@
     <div class="empty" id="empty" style="display:none">Mahsulot topilmadi</div>
 </div>
 
+<button class="cartbar" id="cartbar"></button>
+
 <div class="page" id="page">
     <div class="slider" id="slider"></div>
     <div class="dots" id="dots"></div>
@@ -112,13 +486,24 @@
 
 <div class="sheet" id="sheet">
     <div class="inner">
-        <h3>Buyurtma berish</h3>
+        <h3 id="sheetTitle">Buyurtma berish</h3>
+        <div id="cartList" style="max-height:38vh; overflow-y:auto; margin-bottom:12px;"></div>
         <input id="fName" placeholder="Ismingiz">
         <input id="fPhone" placeholder="Telefon: 901234567" inputmode="tel">
+        <div style="font-size:12px; color:var(--hint); margin:-4px 0 10px 2px;">
+            Bog'lanish uchun ishlaydigan raqamni kiriting
+        </div>
         <textarea id="fNote" placeholder="Izoh (ixtiyoriy)"></textarea>
         <button class="btn" id="fSend">Yuborish</button>
         <button class="link" id="fCancel">Bekor qilish</button>
     </div>
+</div>
+
+<div class="lb" id="lb">
+    <button class="close" id="lbClose">✕</button>
+    <img id="lbImg">
+    <div class="hint" id="lbHint">Kattalashtirish uchun ikki marta bosing</div>
+    <div class="cnt" id="lbCnt"></div>
 </div>
 
 <script>
@@ -129,8 +514,12 @@
     let currentCategory = null;
     let currentProduct = null;
 
-    const money = v => v == null ? null
-        : new Intl.NumberFormat('uz-UZ').format(v) + " so'm";
+    const money = v => {
+        if (v == null) return null;
+        const n = Math.round(Number(v));
+        if (!isFinite(n)) return null;
+        return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ' ') + " so'm";
+    };
 
     async function api(path, opts) {
         const res = await fetch('/api' + path, opts);
@@ -175,18 +564,26 @@
             const el = document.createElement('div');
             el.className = 'card' + (p.inStock ? '' : ' out');
 
-            let priceHtml;
-            if (!p.inStock)          priceHtml = '<div class="neg">Tugagan</div>';
-            else if (p.negotiable)   priceHtml = '<div class="neg">Kelishiladi</div>';
+            let priceHtml = '';
+            if (!p.inStock) priceHtml = '<div class="neg">Tugagan</div>';
             else if (p.price != null) priceHtml = '<div class="pr">' + money(p.price) + '</div>';
-            else                     priceHtml = '<div class="neg">Narxni so\'rang</div>';
+
+            const actHtml = p.inStock
+                ? '<div class="act">' +
+                '<button class="buy">Savatga</button>' +
+                '<div class="step">' +
+                '<button data-d="-1">−</button><span>0</span><button data-d="1">+</button>' +
+                '</div>' +
+                '</div>'
+                : '';
 
             el.innerHTML =
-                '<img class="ph" src="' + (p.imageUrl || '') + '" loading="lazy" ' +
-                'onerror="this.style.visibility=\'hidden\'">' +
-                '<div class="body"><div class="nm">' + esc(p.name) + '</div>' + priceHtml + '</div>';
+                '<img class="ph" src="' + (p.imageUrl || '') + '" loading="lazy">' +
+                '<div class="body">' +
+                '<div class="nm">' + esc(p.name) + '</div>' + priceHtml + actHtml +
+                '</div>';
 
-            el.onclick = () => openProduct(p.id);
+            bindCard(el, p);
             grid.appendChild(el);
         });
     }
@@ -196,6 +593,218 @@
         d.textContent = s;
         return d.innerHTML;
     }
+
+    let cart = [];
+
+    function cartCount() {
+        return cart.reduce((s, i) => s + i.qty, 0);
+    }
+
+    function cartTotal() {
+        return cart.reduce((s, i) => s + (i.price ? i.price * i.qty : 0), 0);
+    }
+
+    function renderCartBar() {
+        const bar = document.getElementById('cartbar');
+        const n = cartCount();
+        if (n === 0) {
+            bar.classList.remove('on');
+            return;
+        }
+        const t = cartTotal();
+        bar.textContent = 'Savat (' + n + ')' + (t > 0 ? ' — ' + money(t) : '');
+        bar.classList.add('on');
+    }
+
+    function addToCart(p) {
+        if (!p.variantId) {
+            tg.showAlert("Bu muhsulotni hozir buyurtma qilib bo'lmaydi");
+            return
+        }
+        const found = cart.find(i => i.variantId === p.variantId);
+        if (found) found.qty++;
+        else cart.push({
+            variantId: p.variantId, name: p.name, price: p.price,
+            imageUrl: p.imageUrl, qty: 1
+        });
+        renderCartBar();
+        if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+    }
+
+    function changeQty(vid, delta) {
+        const i = cart.find(x => x.variantId === vid);
+        if (!i) return;
+        i.qty += delta;
+        if (i.qty < 1) cart = cart.filter(x => x.variantId !== vid);
+        renderCartBar();
+        if (document.getElementById('sheet').classList.contains('on')) renderCartList();
+    }
+
+    function syncAllCards() {
+        document.querySelectorAll('.card').forEach(el => {
+            if (el._sync) el._sync();
+        });
+    }
+
+    function renderCartList() {
+        const box = document.getElementById('cartList');
+        box.innerHTML = '';
+        cart.forEach(i => {
+            const row = document.createElement('div');
+            row.className = 'citem';
+            row.innerHTML =
+                '<img src="' + (i.imageUrl || '') + '">' +
+                '<div class="info"><div class="nm2">' + esc(i.name) + '</div>' +
+                '<div class="pr2">' + (i.price ? money(i.price) : 'Narx kelishiladi') + '</div></div>' +
+                '<div class="qty"><button data-d="-1">−</button><span>' + i.qty +
+                '</span><button data-d="1">+</button></div>';
+            row.querySelectorAll('.qty button').forEach(b => {
+                b.onclick = () => changeQty(i.variantId, +b.dataset.d);
+            });
+            box.appendChild(row);
+        });
+        if (cart.length === 0) closeSheet();
+    }
+
+    function closeSheet() {
+        document.getElementById('sheet').classList.remove('on');
+    }
+
+    document.getElementById('cartbar').onclick = () => {
+        if (cart.length === 0) return;
+        renderCartList();
+        document.getElementById('sheetTitle').textContent = 'Buyurtma (' + cartCount() + ' ta)';
+        openSheet();
+    };
+
+    document.getElementById('fCancel').onclick = closeSheet;
+
+    function bindCard(el, p) {
+        el.querySelector('.ph').onclick = () => openLightbox(p.id);
+
+        const buy = el.querySelector('.buy');
+        if (!buy) return;                    // tugagan mahsulot
+
+        const step = el.querySelector('.step');
+        const num = step.querySelector('span');
+
+        function sync() {
+            const item = cart.find(i => i.variantId === p.variantId);
+            const q = item ? item.qty : 0;
+            num.textContent = q;
+            step.classList.toggle('on', q > 0);
+            buy.classList.toggle('off', q > 0);
+        }
+
+        buy.onclick = e => {
+            e.stopPropagation();
+            addToCart(p);
+            sync();
+        };
+        step.querySelectorAll('button').forEach(b => {
+            b.onclick = e => {
+                e.stopPropagation();
+                changeQty(p.variantId, +b.dataset.d);
+            };
+        });
+
+        el._sync = sync;
+        sync();
+    }
+
+    let lbList = [], lbI = 0, sc = 1, tx = 0, ty = 0;
+    let pStart = 0, sStart = 1, dragging = false, lastX = 0, lastY = 0, lastTap = 0;
+
+    const lb = document.getElementById('lb'), lbImg = document.getElementById('lbImg');
+
+    function apply() {
+        lbImg.style.transform =
+            `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(${sc})`;
+    }
+
+    function showAt(i) {
+        lbI = i;
+        sc = 1;
+        tx = 0;
+        ty = 0;
+        lbImg.src = lbList[i];
+        document.getElementById('lbCnt').textContent =
+            lbList.length > 1 ? (i + 1) + ' / ' + lbList.length : '';
+        apply();
+    }
+
+    async function openLightbox(productId) {
+        const p = await api('/products/' + productId);
+        lbList = p.images;
+        if (!lbList.length) return;
+        showAt(0);
+        lb.classList.add('on');
+        tg.BackButton.show();
+        tg.BackButton.onClick(closeLightbox);
+        setTimeout(() => document.getElementById('lbHint').style.opacity = 0, 2500);
+    }
+
+    function closeLightbox() {
+        lb.classList.remove('on');
+        tg.BackButton.hide();
+    }
+
+    document.getElementById('lbClose').onclick = closeLightbox;
+
+    const dist = t =>
+        Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
+
+    lb.addEventListener('touchstart', e => {
+        if (e.touches.length === 2) {
+            pStart = dist(e.touches);
+            sStart = sc;
+            dragging = false;
+        } else if (e.touches.length === 1) {
+            const now = Date.now();
+            if (now - lastTap < 300) {                 // ikki marta bosish
+                if (sc > 1) {
+                    sc = 1;
+                    tx = 0;
+                    ty = 0;
+                } else sc = 2.5;
+                apply();
+            }
+            lastTap = now;
+            dragging = true;
+            lastX = e.touches[0].clientX;
+            lastY = e.touches[0].clientY;
+        }
+    }, {passive: false});
+
+    lb.addEventListener('touchmove', e => {
+        e.preventDefault();
+        if (e.touches.length === 2) {
+            sc = Math.min(5, Math.max(1, sStart * dist(e.touches) / pStart));
+            if (sc === 1) {
+                tx = 0;
+                ty = 0;
+            }
+            apply();
+        } else if (dragging && sc > 1) {
+            tx += e.touches[0].clientX - lastX;
+            ty += e.touches[0].clientY - lastY;
+            lastX = e.touches[0].clientX;
+            lastY = e.touches[0].clientY;
+            apply();
+        }
+    }, {passive: false});
+
+    lb.addEventListener('touchend', e => {
+        // zoomsiz holatda chapga/o'ngga surish → keyingi rasm
+        if (sc === 1 && dragging && e.changedTouches.length === 1) {
+            const dx = e.changedTouches[0].clientX - lastX;
+            if (Math.abs(dx) > 60 && lbList.length > 1) {
+                showAt((lbI + (dx < 0 ? 1 : -1) + lbList.length) % lbList.length);
+            }
+        }
+        dragging = false;
+    });
+
 
     async function openProduct(id) {
         const p = await api('/products/' + id);
@@ -225,9 +834,9 @@
 
         const v = p.variants[0];
         const priceBox = document.getElementById('pPrice');
-        if (p.negotiable)            priceBox.textContent = 'Kelishiladi';
+        if (p.negotiable) priceBox.textContent = 'Kelishiladi';
         else if (v && v.price != null) priceBox.textContent = money(v.price);
-        else                          priceBox.textContent = "Narxni so'rang";
+        else priceBox.textContent = "Narxni so'rang";
 
         document.getElementById('page').classList.add('on');
 
@@ -247,47 +856,54 @@
 
     function openSheet() {
         document.getElementById('sheet').classList.add('on');
-        const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
-        if (u) {
-            const nameInput = document.getElementById('fName');
-            if (!nameInput.value) {
-                nameInput.value = [u.first_name, u.last_name].filter(Boolean).join(' ');
-            }
+
+        const u = currentUser();
+        if (!u) return;
+        const nameInput = document.getElementById('fName');
+        if (!nameInput.value) {
+            nameInput.value = [u.first_name, u.last_name].filter(Boolean).join(' ');
+        }
+        if (!document.getElementById('fPhone').value) {
+            fillPhoneFromServer();
         }
     }
 
-    document.getElementById('fCancel').onclick = () =>
-        document.getElementById('sheet').classList.remove('on');
-
     document.getElementById('fSend').onclick = async () => {
-        const phone = document.getElementById('fPhone').value.trim();
-        const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
-        if (phone.length < 7) {
-            tg.showAlert('Telefon raqamni to\'liq kiriting');
+        const raw = document.getElementById('fPhone').value.replace(/\D/g, '');
+        const phone = raw.startsWith('998') && raw.length === 12 ? raw.slice(3) : raw;
+        if (phone.length !== 9) {
+            tg.showAlert("Telefon raqamni to'liq kiriting: 901234567");
+            return;
+        }
+        if (cart.length === 0) {
+            tg.showAlert("Savat bo'sh");
             return;
         }
 
         const btn = document.getElementById('fSend');
         btn.disabled = true;
+        const u = tg.initDataUnsafe && tg.initDataUnsafe.user;
 
         try {
             await api('/orders', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json',
-                    ...(u ? { 'X-Telegram-User-Id': String(u.id) } : {})
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(u ? {'X-Telegram-User-Id': String(u.id)} : {})
                 },
                 body: JSON.stringify({
-                    variantId: currentProduct.variants[0] ? currentProduct.variants[0].id : null,
                     fullName: document.getElementById('fName').value.trim(),
                     phone: phone,
-                    note: document.getElementById('fNote').value.trim()
+                    note: document.getElementById('fNote').value.trim(),
+                    items: cart.map(i => ({variantId: i.variantId, qty: i.qty}))
                 })
             });
 
-            document.getElementById('sheet').classList.remove('on');
-            closeProduct();
-            tg.showAlert('Buyurtmangiz qabul qilindi. Tez orada bog\'lanamiz.');
-            document.getElementById('fPhone').value = '';
+            cart = [];
+            renderCartBar();
+            syncAllCards();
+            closeSheet();
+            tg.showAlert("Buyurtmangiz qabul qilindi. Tez orada bog'lanamiz.");
             document.getElementById('fNote').value = '';
 
         } catch (e) {
@@ -300,6 +916,24 @@
     loadShop().then(loadProducts).catch(e =>
         document.getElementById('shopTitle').textContent = 'Xatolik: ' + e.message
     );
+
+    function currentUser() {
+        return tg.initDataUnsafe && tg.initDataUnsafe.user;
+    }
+
+    async function fillPhoneFromServer() {
+        const u = currentUser();
+        if (!u) return false;
+        try {
+            const me = await api('/me?tgUserId=' + u.id);
+            if (me.phone) {
+                document.getElementById('fPhone').value = me.phone;
+                return true;
+            }
+        } catch (e) {
+        }
+        return false;
+    }
 </script>
 </body>
 </html>
